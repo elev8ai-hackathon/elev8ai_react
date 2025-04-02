@@ -118,3 +118,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .fancy-scrollbar {
+    scrollbar-gutter: stable;
+  }
+  .fancy-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .fancy-scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: transparent;
+  }
+
+  .fancy-scrollbar::-webkit-scrollbar-thumb {
+    background: theme("colors.indigo.200");
+    border-radius: 100vh;
+    border: 0px solid white;
+  }
+}

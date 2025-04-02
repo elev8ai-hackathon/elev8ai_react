@@ -1,9 +1,10 @@
-import { Home } from "./pages/Home";
+// import { Home } from "./pages/Home";
+import { MainChat } from "./pages/ChatPage/MainChat";
 
 function App() {
   return (
     <>
-      <Home />
+      <MainChat />
     </>
   );
 }
