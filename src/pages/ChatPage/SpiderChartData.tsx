@@ -3,18 +3,11 @@ import { Card } from "@/components/ui/Card";
 
 export const SpiderChartData = () => {
   const spiderData = {
-    labels: [
-      "Clarity",
-      "Accuracy",
-      "Helpfulness",
-      "Speed",
-      "Knowledge",
-      "Creativity",
-    ],
+    labels: ["Clarity", "Accuracy", "Helpfulness", "Speed", "Creativity"],
     datasets: [
       {
         label: "AI Performance",
-        data: [90, 66, 95, 48, 92, 87],
+        data: [90, 0, 95, 48, 92],
         backgroundColor: "rgba(99, 102, 241, 0.2)",
         borderColor: "rgba(99, 102, 241, 1)",
         borderWidth: 2,
