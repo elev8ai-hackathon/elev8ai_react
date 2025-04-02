@@ -134,7 +134,7 @@
   }
 
   .fancy-scrollbar::-webkit-scrollbar-thumb {
-    background: theme("colors.indigo.200");
+    background: theme("colors.gray.200");
     border-radius: 100vh;
     border: 0px solid white;
   }

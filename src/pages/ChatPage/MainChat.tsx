@@ -7,11 +7,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { RightSection } from "./RightSection";
 import { CompetencyMatches, MatrixData } from "./CompetencyMatches";
+import { RightSection } from "./RightSection";
 import { SpiderChartData } from "./SpiderChartData";
-import { Badge } from "@/components/ui/badge";
-import { ArrowRightIcon } from "lucide-react";
+import { Header } from "@/components/Header";
 
 ChartJS.register(
   RadialLinearScale,
@@ -21,15 +20,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-// const designationMap = {
-//   p2: "Associate Software Engineer",
-//   p3: "Software Engineer",
-//   p4: "Senior Software Engineer",
-//   p5: "Lead Engineer",
-//   p6: "Principal Engineer",
-//   p7: "Solution Architect",
-// };
 
 const mockCompetencyMatrix: MatrixData[] = [
   {
@@ -65,33 +55,6 @@ const mockCompetencyMatrix: MatrixData[] = [
   },
 ];
 
-export const Header = () => {
-  return (
-    <div className="sticky top-0 p-4 flex justify-between items-center">
-      <div className="flex text-purple-700 gap-6">
-        <p className="text-xl font-semibold">Robin Shrestha</p>
-        <div className="flex gap-2 items-center">
-          <Badge
-            variant={"outline"}
-            className="border-purple-800 text-purple-800  px-4 rounded-full"
-          >
-            SE
-          </Badge>
-          <ArrowRightIcon />
-          <Badge
-            variant={"default"}
-            className="bg-indigo-700 px-4 rounded-full"
-          >
-            SSE
-          </Badge>
-        </div>
-      </div>
-      <div className="text-purple-800 text-4xl font-bold text-right">
-        Elev8 AI
-      </div>
-    </div>
-  );
-};
 export function MainChat() {
   return (
     <div className="relative h-screen flex flex-col">

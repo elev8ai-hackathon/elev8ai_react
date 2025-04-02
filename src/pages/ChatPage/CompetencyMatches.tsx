@@ -1,4 +1,11 @@
-import { Card } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 export type MatrixData = {
   label: string;
@@ -11,27 +18,31 @@ interface CompetencyMatchesProps {
 }
 export const CompetencyMatches = ({ data }: CompetencyMatchesProps) => {
   return (
-    <div className="col-span-7 row-span-1 flex flex-col">
-      <h3 className="text-purple-800 font-bold text-xl mb-2">
-        Competency Matches
-      </h3>
-      <Card className="overflow-auto p-4 rounded-xl fancy-scrollbar grow">
-        <div className="pl-1">
-          {data.map((item) => {
-            return (
-              <div key={item.label} className="text-purple-600 mb-2">
-                <h6 className="font-semibold text-purple-700">{item.label}</h6>
-                <p>
-                  <span className="mr-1">Match Percentage:</span>
-                  {item.matchPercent}%
-                </p>
-                <p>
-                  <span className="mr-1">Reasoning:</span> {item.reasoning}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+    <div className="col-span-7 row-span-1">
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle>Competency Matches</CardTitle>
+        </CardHeader>
+        <CardContent className="overflow-auto fancy-scrollbar">
+          <div className="pl-1">
+            {data.map((item) => {
+              return (
+                <div key={item.label} className="mb-2">
+                  <CardDescription className="font-semibold">
+                    {item.label}
+                  </CardDescription>
+                  <p className="flex gap-1">
+                    <Label>Match Percentage:</Label>
+                    {item.matchPercent}%
+                  </p>
+                  <p className="flex gap-1">
+                    <Label>Reasoning:</Label> {item.reasoning}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
