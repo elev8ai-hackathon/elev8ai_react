@@ -1,74 +1,131 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { TimerReset } from "lucide-react";
 import { useState } from "react";
 import { Radar } from "react-chartjs-2";
 
-export const SpiderChartData = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+const getDataSet = (
+  labels: string[],
+  data: number[],
+  label: string,
+  isSubCategory?: boolean
+) => {
+  return {
+    labels,
+    datasets: [
+      {
+        label,
+        data,
+        backgroundColor: isSubCategory
+          ? "rgba(99, 12, 241, 0.2)"
+          : "rgba(99, 102, 241, 0.2)",
+        borderColor: isSubCategory
+          ? "rgba(99, 12, 241, 1)"
+          : "rgba(99, 102, 241, 1)",
+        borderWidth: 2,
+      },
+    ],
+  };
+};
 
-  const spiderData = {
-    labels: [
+export const SpiderChartData = () => {
+  const mainData = getDataSet(
+    [
       "Technical skills",
       "Delivery",
       "Feedback",
       "Leadership",
       "Strategic Impact",
     ],
-    datasets: [
-      {
-        label: "Category",
-        data: [90, 30, 95, 48, 92],
-        backgroundColor: "rgba(99, 102, 241, 0.2)",
-        borderColor: "rgba(99, 102, 241, 1)",
-        borderWidth: 2,
-      },
-    ],
-  };
+    [90, 30, 95, 48, 92],
+    "Category"
+  );
+
+  const [dataset, setDataSet] = useState(mainData);
+  const [isSubCategory, setIsSubCategory] = useState(false);
 
   const subCategoryData = {
-    "Technical skills": [50, 80, 60, 75, 90], // Example: Speed broken into sub-metrics
-    Delivery: [40, 85, 70, 65, 80],
-    Feedback: [55, 65, 85, 90, 95],
-    Leadership: [60, 75, 80, 70, 85],
-    "Strategic Impact": [70, 80, 60, 90, 85],
+    "Technical skills": {
+      labels: ["a", "b", "c", "d", "e"],
+      dataset: [50, 80, 60, 75, 90],
+    },
+    Delivery: {
+      labels: ["a", "b", "c", "d", "e"],
+      dataset: [40, 85, 70, 65, 80],
+    },
+    Feedback: {
+      labels: ["a", "b", "c", "d", "e"],
+      dataset: [55, 65, 85, 90, 95],
+    },
+    Leadership: {
+      labels: ["a", "b", "c", "d", "e"],
+      dataset: [60, 75, 80, 70, 85],
+    },
+    "Strategic Impact": {
+      labels: ["a", "b", "c"],
+      dataset: [70, 80, 60],
+    },
   };
 
   const handleClick = (
     _event: React.MouseEvent<HTMLCanvasElement>,
     elements: any[]
   ) => {
-    console.log(elements);
+    console.log("🚀 ~ SpiderChartData ~ elements:", elements);
     if (!elements.length) return;
 
     // Get the clicked data point index
     const index = elements[0].index;
-    const category = spiderData.labels[index];
+    const category = mainData.labels[index];
 
-    if (category && subCategoryData[category]) {
-      setSelectedCategory(category);
+    if (category && subCategoryData[category] && !isSubCategory) {
+      console.log(category);
+      setIsSubCategory(true);
+      setDataSet(
+        getDataSet(
+          subCategoryData[category].labels,
+          subCategoryData[category].dataset,
+          category
+        )
+      );
     }
+  };
+
+  const resetChart = () => {
+    setDataSet(mainData);
+    setIsSubCategory(false);
   };
 
   return (
     <div className="row-span-3 col-span-7 h-full flex flex-col order-2">
       <Card className="h-full">
         <CardHeader>
-          <CardTitle>Performance Graph</CardTitle>
+          <CardTitle className="flex gap-4 items-center">
+            Performance Graph{" "}
+            <Button
+              onClick={resetChart}
+              variant={"outline"}
+              className={cn({ hidden: !isSubCategory })}
+            >
+              Reset <TimerReset />
+            </Button>
+          </CardTitle>
         </CardHeader>
         <CardContent className="overflow-auto fancy-scrollbar flex justify-center">
           <Radar
-            data={spiderData}
+            data={dataset}
             options={{
-              onClick(event, elements, chart) {
-                console.log(event, elements, chart);
-              },
+              onClick: handleClick,
               layout: {
                 padding: 1,
                 autoPadding: false,
               },
               plugins: {
                 legend: {
-                  display: false,
-                  position: "left",
+                  display: true,
+                  position: "top",
                   maxWidth: 100,
                 },
               },
