@@ -18,7 +18,7 @@ interface CompetencyMatchesProps {
 }
 export const CompetencyMatches = ({ data }: CompetencyMatchesProps) => {
   return (
-    <div className="col-span-7 row-span-1">
+    <div className="col-span-7 row-span-2 order-first">
       <Card className="h-full">
         <CardHeader>
           <CardTitle>Competency Matches</CardTitle>
@@ -27,16 +27,17 @@ export const CompetencyMatches = ({ data }: CompetencyMatchesProps) => {
           <div className="pl-1">
             {data.map((item) => {
               return (
-                <div key={item.label} className="mb-2">
+                <div key={item.label} className="mb-2 text-sm">
                   <CardDescription className="font-semibold">
                     {item.label}
                   </CardDescription>
                   <p className="flex gap-1">
-                    <Label>Match Percentage:</Label>
+                    <Label className="leading-5">Match Percentage:</Label>
                     {item.matchPercent}%
                   </p>
-                  <p className="flex gap-1">
-                    <Label>Reasoning:</Label> {item.reasoning}
+                  <p className="flex gap-1 items-start">
+                    <Label className="leading-5">Reasoning:</Label>{" "}
+                    {item.reasoning}
                   </p>
                 </div>
               );

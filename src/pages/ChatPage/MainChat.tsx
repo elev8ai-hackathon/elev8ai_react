@@ -5,6 +5,7 @@ import {
   LineElement,
   Filler,
   Tooltip,
+  Title,
   Legend,
 } from "chart.js";
 import { CompetencyMatches, MatrixData } from "./CompetencyMatches";
@@ -18,6 +19,7 @@ ChartJS.register(
   LineElement,
   Filler,
   Tooltip,
+  Title,
   Legend
 );
 
@@ -60,11 +62,9 @@ export function MainChat() {
     <div className="relative h-screen flex flex-col">
       <Header />
 
-      <div className="h-screen grid grid-cols-12 overflow-auto grid-rows-2 gap-6 p-6">
-        <CompetencyMatches data={mockCompetencyMatrix} />
-
+      <div className="h-screen grid grid-cols-12 overflow-auto grid-rows-5 gap-6 p-6 grid-flow-col">
         <RightSection />
-
+        <CompetencyMatches data={mockCompetencyMatrix} />
         <SpiderChartData />
       </div>
     </div>

@@ -48,7 +48,7 @@ export const RightSection = () => {
     }, 1000);
   };
   return (
-    <div className="row-span-2 col-span-5 h-full relative p-0">
+    <div className="row-span-full col-span-5 h-full relative p-0 order-last">
       <Card className="h-full flex flex-col">
         <CardHeader>
           <CardTitle>AI Chat</CardTitle>

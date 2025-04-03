@@ -6,8 +6,8 @@ import { UploadForm } from "./pages/UploadPage/UploadForm";
 function App() {
   return (
     <>
-      {/* <MainChat /> */}
-      <UploadForm />
+      <MainChat />
+      {/* <UploadForm /> */}
     </>
   );
 }
