@@ -2,6 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useCandidateSummary } from "@/services";
+import { useSearch } from "@tanstack/react-router";
 import { TimerReset } from "lucide-react";
 import { useState } from "react";
 import {
@@ -15,46 +17,22 @@ import {
 } from "recharts";
 
 export const SpiderChartData = () => {
+  const search = useSearch({ strict: false });
+  const { data: sourceData } = useCandidateSummary((search as any).email);
+
   const [isSubCategory, setIsSubCategory] = useState(false);
 
   const resetChart = () => {
     setIsSubCategory(false);
   };
 
-  const data = [
-    {
-      subject: "Math",
-      A: 120,
-    },
-    {
-      subject: "Chinese",
-      A: 98,
-    },
-    {
-      subject: "English",
-      A: 86,
-    },
-    {
-      subject: "Geography",
-      A: 99,
-    },
-    {
-      subject: "Physics",
-      A: 85,
-    },
-    {
-      subject: "History",
-      A: 65,
-    },
-    {
-      subject: "Opt",
-      A: 65,
-    },
-    {
-      subject: "Botle",
-      A: 122,
-    },
-  ];
+  const areaMatchData =
+    sourceData?.area_matches &&
+    Object.entries(sourceData.area_matches).map(([area, matchPercent]) => ({
+      area,
+      matchPercent,
+    }));
+
   return (
     <div className="row-span-3 col-span-7 h-full flex flex-col order-2">
       <Card className="h-full">
@@ -71,13 +49,18 @@ export const SpiderChartData = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="overflow-auto fancy-scrollbar flex justify-center">
-          <RadarChart outerRadius={150} width={730} height={400} data={data}>
+          <RadarChart
+            outerRadius={150}
+            width={730}
+            height={400}
+            data={areaMatchData}
+          >
             <PolarGrid />
-            <PolarAngleAxis dataKey="subject" allowDuplicatedCategory />
-            <PolarRadiusAxis angle={51} domain={[0, 150]} />
+            <PolarAngleAxis dataKey="area" allowDuplicatedCategory />
+            <PolarRadiusAxis angle={51} domain={[0, 100]} />
             <Radar
-              name="Mike"
-              dataKey="A"
+              name="Area"
+              dataKey="matchPercent"
               stroke="#8884d8"
               fill="#8884d8"
               fillOpacity={0.6}

@@ -83,7 +83,6 @@ export const useCandidateSummary = (email?: string) => {
     select(data) {
       if (data?.summary_json) {
         const parsedSummary = JSON.parse(data?.summary_json);
-        console.log("🚀 ~ select ~ parsedSummary:", parsedSummary);
         return parsedSummary as ArtifactEvaluation;
       }
     },

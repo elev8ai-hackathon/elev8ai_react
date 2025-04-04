@@ -10,48 +10,8 @@ import { Label } from "@/components/ui/label";
 import { useCandidateSummary } from "@/services";
 import { useSearch } from "@tanstack/react-router";
 
-export type MatrixData = {
-  label: string;
-  reasoning: string;
-  matchPercent: number;
-};
-
-const mockCompetencyMatrix: MatrixData[] = [
-  {
-    label: "Clarity",
-    reasoning: "The candidate's response was clear and concise.",
-    matchPercent: 85,
-  },
-  {
-    label: "Accuracy",
-    reasoning: "The candidate's response was accurate and correct.",
-    matchPercent: 90,
-  },
-  {
-    label: "Relevance",
-    reasoning: "The candidate's response was relevant to the question.",
-    matchPercent: 80,
-  },
-  {
-    label: "Depth",
-    reasoning: "The candidate's response was detailed and comprehensive.",
-    matchPercent: 88,
-  },
-  {
-    label: "Coherence",
-    reasoning: "The candidate's response was coherent and well-structured.",
-    matchPercent: 92,
-  },
-  {
-    label: "Grammar",
-    reasoning:
-      "The candidate's response was well-written and free of grammatical errors.",
-    matchPercent: 95,
-  },
-];
-
 export const CompetencyMatches = () => {
-  const search = useSearch({ strict: false }); // defaults to current route
+  const search = useSearch({ strict: false });
 
   const { data } = useCandidateSummary((search as any).email);
   console.log("🚀 ~ CompetencyMatches ~ data:", data);
@@ -60,27 +20,59 @@ export const CompetencyMatches = () => {
     <div className="col-span-7 row-span-2 order-first">
       <Card className="h-full">
         <CardHeader>
-          <CardTitle>Competency Matches</CardTitle>
+          <CardTitle>Competency Matches And Areas oF Improvements:</CardTitle>
         </CardHeader>
         <CardContent className="overflow-auto fancy-scrollbar">
-          <div className="pl-1">
-            {mockCompetencyMatrix.map((item) => {
-              return (
-                <div key={item.label} className="mb-2 text-sm">
-                  <CardDescription className="font-semibold">
-                    {item.label}
-                  </CardDescription>
-                  <p className="flex gap-1">
-                    <Label className="leading-5">Match Percentage:</Label>
-                    {item.matchPercent}%
-                  </p>
-                  <p className="flex gap-1 items-start">
-                    <Label className="leading-5">Reasoning:</Label>{" "}
-                    {item.reasoning}
-                  </p>
-                </div>
-              );
-            })}
+          <CardDescription className="font-semibold text-lg text-black  mb-1">
+            Competency Matches
+          </CardDescription>
+          <div className="pl-1 mb-8">
+            {data?.competency_matches &&
+              Object.entries(data.competency_matches).map(
+                ([competency, desc]) => {
+                  return (
+                    <div key={competency} className="mb-3 text-sm">
+                      <CardDescription className="font-semibold text-base underline underline-offset-2 mb-1">
+                        {competency}
+                      </CardDescription>
+                      <p className="flex gap-1">
+                        <Label className="leading-5">Match Percentage:</Label>
+                        {desc.match_percentage}%
+                      </p>
+                      <p className="flex gap-1 items-start">
+                        <Label className="leading-5">Reasoning:</Label>{" "}
+                        {desc.description}
+                        {desc.reasoning}
+                      </p>
+                    </div>
+                  );
+                }
+              )}
+          </div>
+
+          <CardDescription className="font-semibold text-lg text-black  mb-1">
+            Areas of Improvements:
+          </CardDescription>
+
+          <div className="pl-1 mb-8">
+            {data?.areas_of_improvement &&
+              data.areas_of_improvement.map((improvementsArea) => {
+                return (
+                  <div
+                    key={improvementsArea.competency}
+                    className="mb-3 text-sm"
+                  >
+                    <CardDescription className="font-semibold text-base underline underline-offset-2 mb-1">
+                      {improvementsArea.competency}
+                    </CardDescription>
+
+                    <p className="flex gap-1 items-start">
+                      <Label className="leading-5">Feedback:</Label>{" "}
+                      {improvementsArea.feedback}
+                    </p>
+                  </div>
+                );
+              })}
           </div>
         </CardContent>
       </Card>
