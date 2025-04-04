@@ -39,34 +39,33 @@ export const useCandidatesList = () => {
     },
   });
 };
-
-interface CompetencyMatch {
+export interface CompetencyDetail {
   description: string;
   match_percentage: number;
   reasoning: string;
 }
 
-interface AreaMatch {
+export interface AreaMatches {
   [area: string]: number;
 }
 
-interface CategoryMatch {
+export interface CategoryMatches {
   [category: string]: number;
 }
 
-interface AreaOfImprovement {
+export interface AreaOfImprovement {
   competency: string;
   match_percentage: number;
   feedback: string;
 }
 
-interface ArtifactEvaluation {
+export interface CandidateEvaluation {
   summary: string;
   competency_matches: {
-    [competency: string]: CompetencyMatch;
+    [competency: string]: CompetencyDetail;
   };
-  area_matches: AreaMatch;
-  category_matches: CategoryMatch;
+  area_matches: AreaMatches;
+  category_matches: CategoryMatches;
   final_match: number;
   areas_of_improvement: AreaOfImprovement[];
 }
@@ -83,7 +82,15 @@ export const useCandidateSummary = (email?: string) => {
     select(data) {
       if (data?.summary_json) {
         const parsedSummary = JSON.parse(data?.summary_json);
-        return parsedSummary as ArtifactEvaluation;
+        console.log("🚀 ~ select ~ parsedSummary:", parsedSummary);
+        return parsedSummary as CandidateEvaluation;
+      }
+    },
+    refetchInterval(query) {
+      if (query.state.data?.summary_json) {
+        return false;
+      } else {
+        return 5000;
       }
     },
   });

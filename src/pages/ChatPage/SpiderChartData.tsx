@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useCandidateSummary } from "@/services";
 import { useSearch } from "@tanstack/react-router";
-import { TimerReset } from "lucide-react";
+import { Loader, TimerReset } from "lucide-react";
 import { useState } from "react";
 import {
   Legend,
@@ -18,7 +18,11 @@ import {
 
 export const SpiderChartData = () => {
   const search = useSearch({ strict: false });
-  const { data: sourceData } = useCandidateSummary((search as any).email);
+  const {
+    data: sourceData,
+    isLoading,
+    isPending,
+  } = useCandidateSummary((search as any).email);
 
   const [isSubCategory, setIsSubCategory] = useState(false);
 
@@ -28,9 +32,9 @@ export const SpiderChartData = () => {
 
   const areaMatchData =
     sourceData?.area_matches &&
-    Object.entries(sourceData.area_matches).map(([area, matchPercent]) => ({
-      area,
-      matchPercent,
+    Object.entries(sourceData.area_matches).map(([area, match_percentage]) => ({
+      area: area,
+      matchPercent: match_percentage,
     }));
 
   return (
@@ -49,25 +53,33 @@ export const SpiderChartData = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="overflow-auto fancy-scrollbar flex justify-center">
-          <RadarChart
-            outerRadius={150}
-            width={730}
-            height={400}
-            data={areaMatchData}
-          >
-            <PolarGrid />
-            <PolarAngleAxis dataKey="area" allowDuplicatedCategory />
-            <PolarRadiusAxis angle={51} domain={[0, 100]} />
-            <Radar
-              name="Area"
-              dataKey="matchPercent"
-              stroke="#8884d8"
-              fill="#8884d8"
-              fillOpacity={0.6}
-            />
-            <Legend />
-            <Tooltip cursor={{ stroke: "#8884d8", strokeWidth: 2 }} />
-          </RadarChart>
+          {isLoading || isPending ? (
+            <div className="h-full flex items-center justify-center ">
+              <Loader className="animate-spin size-12 " />
+            </div>
+          ) : (
+            <>
+              <RadarChart
+                outerRadius={150}
+                width={730}
+                height={400}
+                data={areaMatchData || undefined}
+              >
+                <PolarGrid />
+                <PolarAngleAxis dataKey="area" allowDuplicatedCategory />
+                <PolarRadiusAxis angle={51} domain={[0, 100]} />
+                <Radar
+                  name="Area"
+                  dataKey="matchPercent"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                  fillOpacity={0.6}
+                />
+                <Legend />
+                <Tooltip cursor={{ stroke: "#8884d8", strokeWidth: 2 }} />
+              </RadarChart>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

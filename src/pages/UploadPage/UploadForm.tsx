@@ -26,6 +26,8 @@ import {
   uploadFormSchema,
 } from "@/services/uploadForm.schema";
 import { useUploadCandidateDetails } from "@/services";
+import { useRouter } from "@tanstack/react-router";
+import { Loader } from "lucide-react";
 
 const PositionOptions = [
   { label: "Associate Software Engineer", value: "p2" },
@@ -41,20 +43,24 @@ export const UploadForm = () => {
     resolver: zodResolver(uploadFormSchema),
     defaultValues: {},
   });
+  const router = useRouter();
 
-  const { mutateAsync } = useUploadCandidateDetails();
+  const { mutateAsync, isPending } = useUploadCandidateDetails();
   const handleSubmit = async (value: UploadFormSchema) => {
-    const formData = new FormData();
-    formData.append("name", value.name);
-    formData.append("email", value.email);
-    formData.append("to_designation", value.to_designation);
-    formData.append("from_designation", value.from_designation);
-    Array.from(value.artifacts).forEach((file) => {
-      formData.append("file", file);
-    });
+    try {
+      const formData = new FormData();
+      formData.append("name", value.name);
+      formData.append("email", value.email);
+      formData.append("to_designation", value.to_designation);
+      formData.append("from_designation", value.from_designation);
+      Array.from(value.artifacts).forEach((file) => {
+        formData.append("file", file);
+      });
 
-    const res = await mutateAsync(formData);
-    console.log("🚀 ~ handleSubmit ~ res:", res);
+      await mutateAsync(formData);
+    } finally {
+      router.navigate({ to: "/user-summary", search: { email: value.email } });
+    }
   };
 
   return (
@@ -72,6 +78,7 @@ export const UploadForm = () => {
               <FormField
                 control={form.control}
                 name="email"
+                disabled={isPending}
                 render={({ field }) => {
                   return (
                     <FormItem>
@@ -86,6 +93,7 @@ export const UploadForm = () => {
               />
               <FormField
                 control={form.control}
+                disabled={isPending}
                 name="name"
                 render={({ field }) => {
                   return (
@@ -101,6 +109,7 @@ export const UploadForm = () => {
               />
               <FormField
                 control={form.control}
+                disabled={isPending}
                 name="to_designation"
                 render={({ field }) => {
                   return (
@@ -136,6 +145,7 @@ export const UploadForm = () => {
                 }}
               />
               <FormField
+                disabled={isPending}
                 control={form.control}
                 name="from_designation"
                 render={({ field }) => {
@@ -172,6 +182,7 @@ export const UploadForm = () => {
                 }}
               />
               <FormField
+                disabled={isPending}
                 control={form.control}
                 name="artifacts"
                 render={({ field }) => {
@@ -201,8 +212,10 @@ export const UploadForm = () => {
                 <Button
                   className="bg-indigo-700 hover:bg-indigo-700/75 "
                   type="submit"
+                  disabled={isPending}
                 >
                   Submit
+                  {isPending && <Loader className="animate-spin  " />}{" "}
                 </Button>
               </div>
             </form>
