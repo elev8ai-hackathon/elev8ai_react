@@ -25,6 +25,7 @@ import {
   UploadFormSchema,
   uploadFormSchema,
 } from "@/services/uploadForm.schema";
+import { useUploadCandidateDetails } from "@/services";
 
 const PositionOptions = [
   { label: "Associate Software Engineer", value: "p2" },
@@ -41,20 +42,19 @@ export const UploadForm = () => {
     defaultValues: {},
   });
 
+  const { mutateAsync } = useUploadCandidateDetails();
   const handleSubmit = async (value: UploadFormSchema) => {
     const formData = new FormData();
     formData.append("name", value.name);
     formData.append("email", value.email);
-    formData.append("position", value.position);
+    formData.append("to_designation", value.to_designation);
+    formData.append("from_designation", value.from_designation);
     Array.from(value.artifacts).forEach((file) => {
-      formData.append("artifacts", file);
+      formData.append("file", file);
     });
-    console.log(formData.get("artifacts"));
 
-    await fetch("https://your-api.com/upload", {
-      method: "POST",
-      body: formData,
-    });
+    const res = await mutateAsync(formData);
+    console.log("🚀 ~ handleSubmit ~ res:", res);
   };
 
   return (
@@ -101,11 +101,11 @@ export const UploadForm = () => {
               />
               <FormField
                 control={form.control}
-                name="position"
+                name="to_designation"
                 render={({ field }) => {
                   return (
                     <FormItem>
-                      <FormLabel>Position</FormLabel>
+                      <FormLabel>To Designation</FormLabel>
                       <FormControl>
                         <Select
                           {...field}
@@ -113,11 +113,47 @@ export const UploadForm = () => {
                           value={field.value}
                         >
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select a position" />
+                            <SelectValue placeholder="Select a Designation" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectLabel>Position</SelectLabel>
+                              <SelectLabel> Designation</SelectLabel>
+                              {PositionOptions.map((option) => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <FormField
+                control={form.control}
+                name="from_designation"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>From Designation</FormLabel>
+                      <FormControl>
+                        <Select
+                          {...field}
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a Designation" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Designation</SelectLabel>
                               {PositionOptions.map((option) => (
                                 <SelectItem
                                   key={option.value}

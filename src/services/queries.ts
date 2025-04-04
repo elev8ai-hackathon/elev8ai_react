@@ -16,6 +16,13 @@ const request = axios.create({
   },
 });
 
+const requestMultipart = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});
+
 // https://o79r57u9kf.execute-api.us-east-1.amazonaws.com/elev8ai/get-candidates
 export const queryKeys = {
   SUMMARY: "summary",
@@ -33,6 +40,37 @@ export const useCandidatesList = () => {
   });
 };
 
+interface CompetencyMatch {
+  description: string;
+  match_percentage: number;
+  reasoning: string;
+}
+
+interface AreaMatch {
+  [area: string]: number;
+}
+
+interface CategoryMatch {
+  [category: string]: number;
+}
+
+interface AreaOfImprovement {
+  competency: string;
+  match_percentage: number;
+  feedback: string;
+}
+
+interface ArtifactEvaluation {
+  summary: string;
+  competency_matches: {
+    [competency: string]: CompetencyMatch;
+  };
+  area_matches: AreaMatch;
+  category_matches: CategoryMatch;
+  final_match: number;
+  areas_of_improvement: AreaOfImprovement[];
+}
+
 export const useCandidateSummary = (email?: string) => {
   return useQuery({
     queryKey: [queryKeys.SUMMARY, email],
@@ -46,7 +84,7 @@ export const useCandidateSummary = (email?: string) => {
       if (data?.summary_json) {
         const parsedSummary = JSON.parse(data?.summary_json);
         console.log("🚀 ~ select ~ parsedSummary:", parsedSummary);
-        return parsedSummary as any;
+        return parsedSummary as ArtifactEvaluation;
       }
     },
   });
@@ -67,11 +105,7 @@ export const useCandidateChatHistory = (email: string) => {
 export const useUploadCandidateDetails = () => {
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await request.post("/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await requestMultipart.post("/upload", formData);
       return response.data;
     },
   });

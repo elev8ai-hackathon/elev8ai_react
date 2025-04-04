@@ -13,7 +13,8 @@ export const uploadFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email"),
 
-  position: z.string(),
+  from_designation: z.string(),
+  to_designation: z.string(),
   artifacts: fileSchema,
 });
 
