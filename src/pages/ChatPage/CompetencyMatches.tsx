@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Card,
   CardContent,
@@ -6,6 +7,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { useCandidateSummary } from "@/services";
+import { useSearch } from "@tanstack/react-router";
 
 export type MatrixData = {
   label: string;
@@ -48,6 +51,11 @@ const mockCompetencyMatrix: MatrixData[] = [
 ];
 
 export const CompetencyMatches = () => {
+  const search = useSearch({ strict: false }); // defaults to current route
+
+  const { data } = useCandidateSummary((search as any).email);
+  console.log("🚀 ~ CompetencyMatches ~ data:", data);
+
   return (
     <div className="col-span-7 row-span-2 order-first">
       <Card className="h-full">

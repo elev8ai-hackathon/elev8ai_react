@@ -4,100 +4,57 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { TimerReset } from "lucide-react";
 import { useState } from "react";
-import { Radar } from "react-chartjs-2";
-
-const getDataSet = (
-  labels: string[],
-  data: number[],
-  label: string,
-  isSubCategory?: boolean
-) => {
-  return {
-    labels,
-    datasets: [
-      {
-        label,
-        data,
-        backgroundColor: isSubCategory
-          ? "rgba(99, 12, 241, 0.2)"
-          : "rgba(99, 102, 241, 0.2)",
-        borderColor: isSubCategory
-          ? "rgba(99, 12, 241, 1)"
-          : "rgba(99, 102, 241, 1)",
-        borderWidth: 2,
-      },
-    ],
-  };
-};
+import {
+  Legend,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  Tooltip,
+} from "recharts";
 
 export const SpiderChartData = () => {
-  const mainData = getDataSet(
-    [
-      "Technical skills",
-      "Delivery",
-      "Feedback",
-      "Leadership",
-      "Strategic Impact",
-    ],
-    [90, 30, 95, 48, 92],
-    "Category"
-  );
-
-  const [dataset, setDataSet] = useState(mainData);
   const [isSubCategory, setIsSubCategory] = useState(false);
 
-  const subCategoryData = {
-    "Technical skills": {
-      labels: ["a", "b", "c", "d", "e"],
-      dataset: [50, 80, 60, 75, 90],
-    },
-    Delivery: {
-      labels: ["a", "b", "c", "d", "e"],
-      dataset: [40, 85, 70, 65, 80],
-    },
-    Feedback: {
-      labels: ["a", "b", "c", "d", "e"],
-      dataset: [55, 65, 85, 90, 95],
-    },
-    Leadership: {
-      labels: ["a", "b", "c", "d", "e"],
-      dataset: [60, 75, 80, 70, 85],
-    },
-    "Strategic Impact": {
-      labels: ["a", "b", "c"],
-      dataset: [70, 80, 60],
-    },
-  };
-
-  const handleClick = (
-    _event: React.MouseEvent<HTMLCanvasElement>,
-    elements: any[]
-  ) => {
-    console.log("🚀 ~ SpiderChartData ~ elements:", elements);
-    if (!elements.length) return;
-
-    // Get the clicked data point index
-    const index = elements[0].index;
-    const category = mainData.labels[index];
-
-    if (category && subCategoryData[category] && !isSubCategory) {
-      console.log(category);
-      setIsSubCategory(true);
-      setDataSet(
-        getDataSet(
-          subCategoryData[category].labels,
-          subCategoryData[category].dataset,
-          category
-        )
-      );
-    }
-  };
-
   const resetChart = () => {
-    setDataSet(mainData);
     setIsSubCategory(false);
   };
 
+  const data = [
+    {
+      subject: "Math",
+      A: 120,
+    },
+    {
+      subject: "Chinese",
+      A: 98,
+    },
+    {
+      subject: "English",
+      A: 86,
+    },
+    {
+      subject: "Geography",
+      A: 99,
+    },
+    {
+      subject: "Physics",
+      A: 85,
+    },
+    {
+      subject: "History",
+      A: 65,
+    },
+    {
+      subject: "Opt",
+      A: 65,
+    },
+    {
+      subject: "Botle",
+      A: 122,
+    },
+  ];
   return (
     <div className="row-span-3 col-span-7 h-full flex flex-col order-2">
       <Card className="h-full">
@@ -114,29 +71,20 @@ export const SpiderChartData = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="overflow-auto fancy-scrollbar flex justify-center">
-          <Radar
-            data={dataset}
-            options={{
-              onClick: handleClick,
-              layout: {
-                padding: 1,
-                autoPadding: false,
-              },
-              plugins: {
-                legend: {
-                  display: true,
-                  position: "top",
-                  maxWidth: 100,
-                },
-              },
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  max: 100,
-                },
-              },
-            }}
-          />
+          <RadarChart outerRadius={150} width={730} height={400} data={data}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="subject" allowDuplicatedCategory />
+            <PolarRadiusAxis angle={51} domain={[0, 150]} />
+            <Radar
+              name="Mike"
+              dataKey="A"
+              stroke="#8884d8"
+              fill="#8884d8"
+              fillOpacity={0.6}
+            />
+            <Legend />
+            <Tooltip cursor={{ stroke: "#8884d8", strokeWidth: 2 }} />
+          </RadarChart>
         </CardContent>
       </Card>
     </div>
