@@ -13,10 +13,41 @@ export type MatrixData = {
   matchPercent: number;
 };
 
-interface CompetencyMatchesProps {
-  data: MatrixData[];
-}
-export const CompetencyMatches = ({ data }: CompetencyMatchesProps) => {
+const mockCompetencyMatrix: MatrixData[] = [
+  {
+    label: "Clarity",
+    reasoning: "The candidate's response was clear and concise.",
+    matchPercent: 85,
+  },
+  {
+    label: "Accuracy",
+    reasoning: "The candidate's response was accurate and correct.",
+    matchPercent: 90,
+  },
+  {
+    label: "Relevance",
+    reasoning: "The candidate's response was relevant to the question.",
+    matchPercent: 80,
+  },
+  {
+    label: "Depth",
+    reasoning: "The candidate's response was detailed and comprehensive.",
+    matchPercent: 88,
+  },
+  {
+    label: "Coherence",
+    reasoning: "The candidate's response was coherent and well-structured.",
+    matchPercent: 92,
+  },
+  {
+    label: "Grammar",
+    reasoning:
+      "The candidate's response was well-written and free of grammatical errors.",
+    matchPercent: 95,
+  },
+];
+
+export const CompetencyMatches = () => {
   return (
     <div className="col-span-7 row-span-2 order-first">
       <Card className="h-full">
@@ -25,7 +56,7 @@ export const CompetencyMatches = ({ data }: CompetencyMatchesProps) => {
         </CardHeader>
         <CardContent className="overflow-auto fancy-scrollbar">
           <div className="pl-1">
-            {data.map((item) => {
+            {mockCompetencyMatrix.map((item) => {
               return (
                 <div key={item.label} className="mb-2 text-sm">
                   <CardDescription className="font-semibold">
