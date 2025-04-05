@@ -31,6 +31,11 @@ export const CompetencyMatches = () => {
             </div>
           ) : (
             <>
+              {data?.final_match && (
+                <CardDescription className="font-semibold text-lg text-black  mb-1">
+                  Final Match: {data?.final_match}%
+                </CardDescription>
+              )}
               <CardDescription className="font-semibold text-lg text-black  mb-1">
                 Competency Matches
               </CardDescription>
