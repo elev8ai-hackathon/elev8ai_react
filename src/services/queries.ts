@@ -2,11 +2,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const BASE_URL =
-  "https://o79r57u9kf.execute-api.us-east-1.amazonaws.com/elev8ai";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const username = import.meta.env.VITE_USERNAME;
+const password = import.meta.env.VITE_PASSWORD;
 
-const username = "userelev8ai123";
-const password = "userElev8@ai123";
 const encodedCredentials = btoa(`${username}:${password}`);
 
 const request = axios.create({
