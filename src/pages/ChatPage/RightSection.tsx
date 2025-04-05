@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -7,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { usePostChatQuery } from "@/services";
+import { useSearch } from "@tanstack/react-router";
 
 interface Message {
   content: string;
@@ -19,12 +22,36 @@ export const RightSection = () => {
     {
       content: "Hello! How can I assist you today?",
       sender: "ai",
-      timestamp: new Date(),
+      timestamp: new Date(new Date().getTime() - 15 * 60 * 1000),
     },
+    // {
+    //   content: "What are the weakness the candidate?",
+    //   sender: "user",
+    //   timestamp: new Date(new Date().getTime() - 12 * 60 * 1000),
+    // },
+    // {
+    //   content:
+    //     "While specific weaknesses aren't explicitly stated in performance data, competency matrix analysis suggests potential growth areas in Economic Thinking (weighing cost/value tradeoffs) and Handling Disagreement (fostering constructive conflict resolution).",
+    //   sender: "ai",
+    //   timestamp: new Date(new Date().getTime() - 11 * 60 * 1000),
+    // },
+    // {
+    //   content: "What are the strength the candidate?",
+    //   sender: "user",
+    //   timestamp: new Date(new Date().getTime() - 9 * 60 * 1000),
+    // },
+    // {
+    //   content:
+    //     "Key strengths include Driving Alignment (effectively coordinating team responsibilities and maintaining clear communication for shared objectives) and Process Thinking (optimizing workflows through practices like PR review channels and coding standards documentation).",
+    //   sender: "ai",
+    //   timestamp: new Date(new Date().getTime() - 5 * 60 * 1000),
+    // },
   ]);
   const [input, setInput] = useState("");
+  const search = useSearch({ strict: false });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { mutateAsync, isPending } = usePostChatQuery();
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -37,15 +64,31 @@ export const RightSection = () => {
     setMessages([...messages, newMessage]);
     setInput("");
 
+    const res = await mutateAsync({
+      email: (search as any).email,
+      input: input,
+    });
     // Simulate AI response
-    setTimeout(() => {
-      const aiResponse: Message = {
-        content: "I understand your message. How can I help you further?",
-        sender: "ai",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, aiResponse]);
-    }, 1000);
+    console.log("🚀 ~ handleSubmit ~ res:", res);
+
+    const aiResponse: Message = {
+      content:
+        res.response.answer ||
+        "Im not sure about that information. I did not find any reference in the knowledge base?",
+      sender: "ai",
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, aiResponse]);
+    // setTimeout(() => {
+    //   const aiResponse: Message = {
+    //     content:
+    //       "Im not sure about that information. I did not find any reference in the knowledge base?",
+    //     sender: "ai",
+    //     timestamp: new Date(),
+    //   };
+    //   setMessages((prev) => [...prev, aiResponse]);
+    // }, 1000);
   };
   return (
     <div className="row-span-full col-span-5 h-full relative p-0 order-last">
@@ -96,6 +139,7 @@ export const RightSection = () => {
         <CardFooter>
           <form onSubmit={handleSubmit} className="flex gap-4 w-full">
             <input
+              disabled={!!isPending}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -103,10 +147,15 @@ export const RightSection = () => {
               className="grow border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
             <button
+              disabled={!!isPending}
               type="submit"
               className="bg-indigo-600 text-white rounded-lg px-4 py-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              <Send className="w-5 h-5" />
+              {isPending ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
             </button>
           </form>
         </CardFooter>

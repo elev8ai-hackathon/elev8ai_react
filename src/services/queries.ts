@@ -39,33 +39,35 @@ export const useCandidatesList = () => {
     },
   });
 };
-export interface CompetencyDetail {
+
+interface CompetencyMatch {
+  name: string;
   description: string;
   match_percentage: number;
   reasoning: string;
 }
 
-export interface AreaMatches {
-  [area: string]: number;
+interface AreaMatch {
+  name: string;
+  match_percentage: number;
 }
 
-export interface CategoryMatches {
-  [category: string]: number;
+interface CategoryMatch {
+  name: string;
+  match_percentage: number;
 }
 
-export interface AreaOfImprovement {
+interface AreaOfImprovement {
   competency: string;
   match_percentage: number;
   feedback: string;
 }
 
-export interface CandidateEvaluation {
+interface EvaluationSummary {
   summary: string;
-  competency_matches: {
-    [competency: string]: CompetencyDetail;
-  };
-  area_matches: AreaMatches;
-  category_matches: CategoryMatches;
+  competency_matches: CompetencyMatch[];
+  area_matches: AreaMatch[];
+  category_matches: CategoryMatch[];
   final_match: number;
   areas_of_improvement: AreaOfImprovement[];
 }
@@ -77,17 +79,17 @@ export const useCandidateSummary = (email?: string) => {
       if (!email) return;
 
       const response = await request.get(`/candidate-summary?email=${email}`);
-      return response.data as { email: string; summary_json: string };
+      return response.data as string;
     },
     select(data) {
-      if (data?.summary_json) {
-        const parsedSummary = JSON.parse(data?.summary_json);
+      if (data) {
+        const parsedSummary = JSON.parse(data);
         console.log("🚀 ~ select ~ parsedSummary:", parsedSummary);
-        return parsedSummary as CandidateEvaluation;
+        return parsedSummary as EvaluationSummary;
       }
     },
     refetchInterval(query) {
-      if (query.state.data?.summary_json) {
+      if (query.state.data) {
         return false;
       } else {
         return 5000;
@@ -118,7 +120,7 @@ export const useUploadCandidateDetails = () => {
 };
 
 export type QueryObj = {
-  queryString: string;
+  input: string;
   email: string;
 };
 
