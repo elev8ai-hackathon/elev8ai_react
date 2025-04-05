@@ -6,7 +6,7 @@ export const BaseLayout = () => {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex justify-between h-20">
-        <div>content from context</div>
+        <div></div>
         <div className="p-2 flex gap-4">
           <Link to="/" className="[&.active]:font-bold">
             Home
